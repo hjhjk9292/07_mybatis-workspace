@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+	<!-- namespace : 해당 mapper파일의 고유한 별칭(ㅡ보통 테이블명과 매칭) -->
+
+	<!--
+	
+		* DML문일 경우 
+		<insert|update|delete id="각 sql문 식별자" [parameterType="전달받은 자바타입(풀클래스명)|별칭"] resultType="조회 결과를 반환하고자 하는 자바 타입" | resultMap="조회 결과를 뽑아서 매핑할 resultMap">
+		
+		</insert|update|delete>
+		// dml문 같은 경우 어짜피 실행 결과가 처리된 행수 (int)이기 때문에 resultType 또는 resultMap에 대한 속성은 안 써도 됨!
+		
+		* SELECT문일 경우
+		<select id="각 sql문 식별자" 
+				[parameterType="전달받은 자바타입(풀클래스명)|별칭"] resultType="조회 결과를 반환하고자 하는 자바 타입" | resultMap="조회 결과를 뽑아서 매핑할 resultMap">
+		
+		</select>
+	 -->
+	 
+	 <!-- 
+	 	* resultMap 마이바티스의 핵심 기능 중 하나!
+	 	  ResultSet 으로부터 조회된 컬럼값 하나씩 뽑아서 내가 지정한 VO 객체의 각 필드에 담는 역할 수행
+	 
+		  <resultMap id="식별자" type="조회결과를 담아서 반환하고자 하는 vo객체의 타입(풀클리스명) | 별칭">
+	 	 	<result column="db컬럼명" property="vo필드명"/>
+	 	 	<result column="db컬럼명" property="vo필드명"/>
+	 	 	<result column="db컬럼명" property="vo필드명"/>
+	 	  </resultMap>
+	 
+	 
+	  -->
+	 <resultMap id="memberResultSet" type="Member">
+	 	<result column="user_no" property="userNo"/>
+	 	<result column="user_id" property="userId"/>
+	 	<result column="user_pwd" property="userPwd"/>
+	 	<result column="user_name" property="userName"/>
+	 	<result column="email" property="email"/>
+	 	<result column="birthday" property="birthday"/>
+	 	<result column="gender" property="gender"/>
+	 	<result column="phone" property="phone"/>
+	 	<result column="address" property="address"/>
+	 	<result column="enroll_date" property="enrollDate"/>
+	 	<result column="modify_date" property="modifyDate"/>
+	 	<result column="status" property="status"/>
+	 </resultMap>
+	 
+	 <select id="loginMember" resultMap="memberResultSet" parameterType="Member"> <!-- 이걸 조회한 결과를 memberResultSet 여기에 mapping하겠다 // parameterType : 남이 나에게 준 것이 무슨 타입이냐-->
+		select
+		       user_no
+		     , user_id
+		     , user_pwd
+		     , user_name
+		     , email
+		     , birthday
+		     , gender
+		     , phone
+		     , address
+		     , enroll_date
+		     , modify_date
+		     , status
+		  from member
+		 where user_id = #{userId}
+		   and user_pwd = #{userPwd}
+		   and status = 'Y'
+	 </select>
+	 
+	 
+	 <insert id="insertMember" parameterType="Member">
+		insert
+			 into member
+			 (
+			   user_no
+			 , user_id
+			 , user_pwd
+			 , user_name
+			 , email
+			 , birthday
+			 , gender
+			 , phone
+			 , address
+			 )
+			 values
+			 (
+			   seq_uno.nextval
+			 , #{userId}
+			 , #{userPwd}
+			 , #{userName}
+			 , #{email}
+			 , #{birthday}
+			 , #{gender}
+			 , #{phone}
+			 , #{address}
+			 )
+	 </insert>
+</mapper>
