@@ -27,7 +27,7 @@ public class MemberDao {
 		// Member loginUser = sqlSession.selectOne("memberMapper.loginMember", m); 
 		// 쿼리의 namespace인 memberMapper . 뒤에 id 값 작성 // 한줄로 ㄱ 
 		
-		return sqlSession.selectOne("memberMapper.loginMember", m);
+		return sqlSession.selectOne("memberMapper.loginMember", m); // selectOne 결과가 1개일 경우
 	}
 
 }

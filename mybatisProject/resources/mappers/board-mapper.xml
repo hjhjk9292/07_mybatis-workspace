@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="boardMapper">
+
+	<resultMap id="boardResultSet" type="Board"> <!-- 관례적으로 이 부분에 작성 / id는 일반적으로 테이블 이름 적고 ResultSet 붙임 / type은 mybatis-config.xml에서 typeAlias에서 설정 -->
+		<result column="board_no" property="boardNo"/>
+		<result column="board_title" property="boardTitle"/>
+		<result column="user_id" property="boardWriter"/> <!-- 헷갈리지 않도록 column과 vo 잘 확인해서 작성 -->
+		<result column="count" property="count"/>
+		<result column="create_date" property="createDate"/>
+		<result column="board_content" property="boardContent"/> <!-- resultMap 재활용,, 여기다 쓰면 문제가 되지 않음. selectList 읽을 때 board_content 해당하는 값이 없으면 null이 들어감 -->
+	</resultMap>
+	
+	<resultMap id="replyResultSet" type="Reply">
+		<result column="reply_no" property="replyNo"/>
+		<result column="user_id" property="replyWriter"/>
+		<result column="reply_content" property="replyContent"/>
+		<result column="create_date" property="createDate"/>
+	</resultMap>
+
+	<select id="selectListCount" resultType="_int"> <!-- select문은 resultXXX="" 를 꼭 작성해줘야함 -->
+		select
+		       count(*)
+		  from board
+		 where status = 'Y'
+	</select>
+	
+	<select id="selectList" resultMap="boardResultSet">
+		 select
+		        board_no
+		      , board_title
+		      , user_id
+		      , count
+		      , create_date
+		   from board b
+		   join member on (board_writer = user_no)
+		  where b.status = 'Y'
+		  order
+		     by board_no desc
+	</select>
+	
+	<update id="increaseCount" parameterType="_int">
+		update board
+		   set count = count + 1
+		 where board_no = #{boardNo}
+		   and status = 'Y'
+	</update>
+	
+	<select id="selectBoard" resultMap="boardResultSet" parameterType="_int">
+		 select
+		        board_no
+		      , board_title
+		      , user_id
+		      , count
+		      , create_date
+		      , board_content
+		   from board b
+		   join member on (board_writer = user_no)
+		  where board_no = #{boardNo} <!-- 변수가 담긴 것 (m을 줬을 때만 getter호출임) -->
+	</select>
+	
+	<select id="selectReplyList" resultMap="replyResultSet" >
+		select
+			   reply_no
+			 , user_id
+			 , reply_content
+			 , create_date
+		  from reply r
+		  join member on (reply_writer = user_no)
+		 where ref_bno = #{boardNo}
+		   and r.status = 'Y'
+		 order
+		    by reply_no desc
+	</select>
+	
+	<select id="selectSearchCount" resultType="_int">
+	    select
+	           count(*)
+	      from board b
+	      join member on (board_writer = user_no)
+	     where b.status = 'Y'
+	     <if test="condition == 'writer'">
+		   and user_id
+		 </if>
+		 <if test="condition == 'title'">
+		   and board_title
+		 </if>
+		 <if test="condition == 'content'">
+		   and board_content
+		 </if>
+		  like '%' || #{keyword} || '%'
+	</select>
+
+</mapper>

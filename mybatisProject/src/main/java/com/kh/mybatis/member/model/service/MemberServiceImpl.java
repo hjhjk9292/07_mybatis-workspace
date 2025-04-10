@@ -8,7 +8,7 @@ import com.kh.mybatis.member.model.vo.Member;
 
 public class MemberServiceImpl implements MemberService {
 	
-	private MemberDao mDao = new MemberDao();
+	private MemberDao mDao = new MemberDao(); // mybatis에서는 계속 호출할 필요 없도록..
 
 	@Override
 	public int insertMember(Member m) {

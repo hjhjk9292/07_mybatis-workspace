@@ -62,7 +62,7 @@
 		     , modify_date
 		     , status
 		  from member
-		 where user_id = #{userId}
+		 where user_id = #{userId} <!-- getter 메소드가 내부적으로 호출되는것(그래서 getter를 만들어야함) -->
 		   and user_pwd = #{userPwd}
 		   and status = 'Y'
 	 </select>
