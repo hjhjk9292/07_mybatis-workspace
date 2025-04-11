@@ -93,5 +93,31 @@
 		 </if>
 		  like '%' || #{keyword} || '%'
 	</select>
+	
+	<select id="selectSearchList" resultMap="boardResultSet">
+		select
+		        board_no
+		      , board_title
+		      , user_id
+		      , count
+		      , create_date
+		   from board b
+		   join member on (board_writer = user_no)
+		  where b.status = 'Y'
+		  <choose>
+		  	<when test="condition == 'writer'">
+			    and user_id
+		    </when>
+		    <when test="condition == 'title'">
+		    	and board_title
+		    </when>
+		    <otherwise>
+			    and board_content
+		    </otherwise>
+		  </choose> 
+		   like '%' || #{keyword} || '%'
+		  order
+		     by board_no desc
+	</select>
 
 </mapper>

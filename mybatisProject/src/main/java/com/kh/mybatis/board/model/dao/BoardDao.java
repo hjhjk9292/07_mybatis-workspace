@@ -58,5 +58,15 @@ public class BoardDao {
 	public int selectSearchCount(SqlSession sqlSession, HashMap<String, String> map) {
 		return sqlSession.selectOne("boardMapper.selectSearchCount", map);
 	}
+	
+	public ArrayList<Board> selectSearchList(SqlSession sqlSession, HashMap<String, String> map, PageInfo pi){
+		
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.selectSearchList", map, rowBounds);
+	}
 
 }

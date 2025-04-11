@@ -1,6 +1,7 @@
 package com.kh.mybatis.board.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.kh.mybatis.board.model.service.BoardServiceImpl;
+import com.kh.mybatis.board.model.vo.Board;
 import com.kh.mybatis.common.model.vo.PageInfo;
 import com.kh.mybatis.common.template.Pagination;
 
@@ -45,8 +47,16 @@ public class BoardSearchController extends HttpServlet {
 		int currentPage = Integer.parseInt(request.getParameter("cpage"));
 		
 		PageInfo pi = Pagination.getPageInfo(searchCount, currentPage, 10, 5); // searchCount=10, currentPage=5
+		ArrayList<Board> list = bService.selectSearchList(map, pi);
+		
+		request.setAttribute("pi", pi);
+		request.setAttribute("list", list);
+		
+		request.setAttribute("condition", condition);
+		request.setAttribute("keyword", keyword);
+		
+		request.getRequestDispatcher("WEB-INF/views/board/boardListView.jsp").forward(request, response);
 
-		System.out.println(pi);
 	}
 
 	/**
